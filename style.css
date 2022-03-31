@@ -1,6 +1,8 @@
 :root {
   --bg: white;
   --fg: black;
+  --message-bg: var(--fg);
+  --message-fg: var(--bg);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -8,6 +10,21 @@
     --bg: black;
     --fg: white;
   }
+}
+
+h1 {
+  text-align: center;
+}
+
+column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+}
+
+body {
+  font-family: sans-serif;
 }
 
 body, input {
@@ -104,7 +121,6 @@ letter.in-correct-location {
 }
 
 guess-list {
-  overflow-y: auto;
   align-content: flex-start;
 }
 
@@ -125,8 +141,17 @@ guess-list letter:nth-of-type(5) {
 }
 
 guess-list {
-  margin: 2em;
   font-size: 0.8em;
+}
+
+message {
+  padding: 0.5em;
+  border-radius: 4px;
+  color: var(--message-fg);
+  background-color: var(--message-bg);
+  display: block;
+  visibility: hidden;
+  opacity: 0;
 }
 
 @keyframes flip {
@@ -146,6 +171,28 @@ form {
 }
 
 input {
-  margin: 2em;
   border-radius: 0;
+}
+
+@media (min-width: 800px) {
+  body {
+    display: grid;
+    grid-template-columns: repeat(2, 18em);
+    justify-content: center;
+  }
+
+  h1 {
+    grid-row: 1;
+    grid-column: 1/-1;
+  }
+
+  guess-list {
+    font-size: 1em;
+  }
+}
+
+@media (max-height: 700px) {
+  crossword, guess-list {
+    font-size: 0.8em;
+  }
 }

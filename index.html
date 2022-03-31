@@ -1,16 +1,22 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="style.css"/>
     <title>Crosswordle</title>
   </head>
   <body>
-    <crossword></crossword>
-    <form>
-      <input autofocus minlength="5" maxlength="5" pattern="[a-z]*"/>
+    <h1>Crosswordle</h1>
+    <column>
+      <crossword></crossword>
+      <message>message</message>
+      <input readonly autofocus minlength="5" maxlength="5" pattern="[a-z]*"/>
       <keyboard></keyboard>
-    </form>
-    <guess-list></guess-list>
+    </column>
+    <column>
+      <h2>Guesses</h2>
+      <guess-list></guess-list>
+    </column>
     <script type="module" src="script.js"></script>
   </body>
 </html>

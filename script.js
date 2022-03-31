@@ -7,21 +7,41 @@ for(const word of solution) {
   }
 }
 
+let numGuesses = 0;
+
 const input = document.querySelector('input');
-
-input.addEventListener('input', () => {
-  validateInput();
-});
-
-document.querySelector('form').addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  guess(input.value, solution);
-  input.value = '';
-});
 
 createKeyboard();
 
-async function guess(word, solution) {
+function typeLetter(letter) {
+  if(letter === '⌫') {
+    input.value = input.value.substring(0, input.value.length - 1);
+  } else if(input.value.length >= 5) {
+    return;
+  } else {
+    input.value += letter;
+  }
+}
+
+async function guess() {
+  const word = input.value;
+  if(word.length === 0) {
+    showMessage('type any five letter word');
+  }
+  if(word.length < 5) {
+    showMessage('too short');
+    return;
+  } else if(word.length > 5) {
+    showMessage('too long');
+    return;
+  } else if (!allWords.has(word)) {
+    showMessage(`I don't know that word`);
+    return;
+  }
+
+  numGuesses++;
+  input.value = '';
+
   const guessList = document.querySelector('guess-list');
   const allWordsInSolution = [...solution, ...transpose(solution)];
   for(let i = word.length - 1; i >= 0; i--) {
@@ -53,11 +73,29 @@ async function guess(word, solution) {
   }
 
   if(document.querySelectorAll('crossword letter.found').length === 25) {
-    alert('you won');
+    showMessage(`you won in ${numGuesses} guesses`);
   }
 }
 
 const letters = new Set('qwertyuiopasdfghjklzxcvbnm'.split(''))
+
+addEventListener('keydown', evt => {
+  let handled = true;
+  if(evt.key === 'Backspace') {
+    if(evt.ctrlKey || evt.metaKey) {
+      input.value = '';
+    } else {
+      typeLetter('⌫');
+    }
+  } else if(letters.has(evt.key) && !evt.ctrlKey && !evt.metaKey) {
+    typeLetter(evt.key);
+  } else if(evt.key === 'Enter') {
+    guess();
+  } else {
+    handled = false;
+  }
+  if(handled) evt.preventDefault();
+});
 
 function revealCell(x, y) {
   const index = 5*y+x;
@@ -82,7 +120,7 @@ function transpose(solution) {
 function createKeyboard() {
   const keyboard = document.querySelector('keyboard');
 
-  ['qwertyuiop', 'asdfghjkl','zxcvbnm↵'].forEach((row, index) => {
+  ['qwertyuiop', 'asdfghjkl','⌫zxcvbnm↵'].forEach((row, index) => {
     const keyboardRow = document.createElement('keyboard-row');
     for(const letter of row) {
       const cell = createLetterCell(letter);
@@ -90,9 +128,11 @@ function createKeyboard() {
       keyboardRow.appendChild(cell);
 
       cell.addEventListener('click', () => {
-        input.value += letter;
-        validateInput();
-        input.reportValidity();
+        if(letter === '↵') {
+          guess();
+        } else {
+          typeLetter(letter);
+        }
       });
     }
     keyboard.appendChild(keyboardRow);
@@ -115,3 +155,44 @@ function validateInput() {
     input.setCustomValidity('');
   }
 }
+
+function showMessage(message) {
+  const el = document.querySelector('message');
+  el.textContent = message;
+  el.animate([
+    {
+      visibility: 'visible',
+      transform: 'scale(0.8)',
+    },
+    {
+      offset: 0.05,
+      easing: 'ease-out',
+      transform: 'scale(1.2)',
+      opacity: 1,
+    },
+    {
+      offset: 0.1,
+      easing: 'ease-in',
+      transform: 'scale(1.0)',
+    },
+    {
+      offset: 0.9,
+      opacity: 1,
+      transform: 'scale(1.0)',
+    },
+    {
+      offset: 0.95,
+      transform: 'scale(0.8)',
+      opacity: 0,
+      visibility: 'visible',
+    },
+    {
+      transform: 'scale(0.8)',
+    }
+  ], {
+    duration: 5000,
+    iterations: 1
+  });
+}
+
+window.showMessage = showMessage;
