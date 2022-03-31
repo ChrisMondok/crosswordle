@@ -1,9 +1,12 @@
 async function fetchSolution() {
-  const response = await fetch('solutions');
-  const lines = (await response.text()).split('\n').filter(x => x);
-  const numPuzzles = lines.length / lines[0].length;
+  const solutions = await (await fetch('solutions')).text();
+  const numPuzzles = solutions.length / 25; 
   const puzzleNumber = Math.floor(Math.random() * numPuzzles);
-  return lines.slice(5 * puzzleNumber, 5 * (puzzleNumber + 1));
+  console.log(`puzzle ${puzzleNumber} of ${numPuzzles}`);
+  const thisPuzzle = solutions
+    .substring(puzzleNumber * 25, (puzzleNumber + 1) * 25)
+    .match(/.{5}/g);
+  return thisPuzzle;
 }
 
 async function fetchDictionary() {
