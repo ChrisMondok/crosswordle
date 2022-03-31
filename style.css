@@ -57,6 +57,7 @@ letter {
   width: 2em;
   line-height: 2em;
   transition: transform 1s ease-out;
+  user-select: none;
 }
 
 letter, letter:after {
