@@ -20,6 +20,8 @@ function typeLetter(letter) {
     return;
   } else {
     input.value += letter;
+    const key = document.querySelector(`keyboard letter-card.${letter}`);
+    if(key) animateKey(key);
   }
 }
 
@@ -60,19 +62,19 @@ async function guess() {
 
     if(allWordsInSolution.some(word => word[i] === letter)) {
       letterCell.classList.add('in-correct-location');
-      document.querySelector(`keyboard letter.${letter}`).classList.add('in-correct-location');
+      document.querySelector(`keyboard letter-card.${letter}`).classList.add('in-correct-location');
     } else if(solution.some(word => word.indexOf(letter) !== -1)) {
       letterCell.classList.add('in-solution');
-      document.querySelector(`keyboard letter.${letter}`).classList.add('in-solution');
+      document.querySelector(`keyboard letter-card.${letter}`).classList.add('in-solution');
     } else {
       letterCell.classList.add('not-in-solution');
-      document.querySelector(`keyboard letter.${letter}`).classList.add('not-in-solution');
+      document.querySelector(`keyboard letter-card.${letter}`).classList.add('not-in-solution');
     }
 
     guessList.insertBefore(letterCell, guessList.firstChild);
   }
 
-  if(document.querySelectorAll('crossword letter.found').length === 25) {
+  if(document.querySelectorAll('crossword letter-card.found').length === 25) {
     showMessage(`you won in ${numGuesses} guesses`);
   }
 }
@@ -99,7 +101,7 @@ addEventListener('keydown', evt => {
 
 function revealCell(x, y) {
   const index = 5*y+x;
-  document.querySelector(`crossword letter:nth-of-type(${index + 1})`)
+  document.querySelector(`crossword letter-card:nth-of-type(${index + 1})`)
     .classList.add('found');
 }
 
@@ -127,22 +129,40 @@ function createKeyboard() {
       cell.style.gridRow = index + 1;
       keyboardRow.appendChild(cell);
 
-      cell.addEventListener('click', () => {
-        if(letter === '↵') {
-          guess();
-        } else {
-          typeLetter(letter);
-        }
-      });
+     cell.addEventListener('click', () => {
+       animateKey(cell);
+
+       if(letter === '↵') {
+         guess();
+       } else {
+         typeLetter(letter);
+       }
+     });
     }
     keyboard.appendChild(keyboardRow);
   });
 }
 
+function animateKey(key) {
+  key.animate([
+    {
+      transform: 'translateZ(-10px)'
+    },
+    {
+      transform: 'translateZ(0px)',
+    }
+  ], {
+    duration: 250,
+    iterations: 1
+  })
+}
+
 function createLetterCell(letter) {
-  const container = document.createElement('letter');
+  const container = document.createElement('letter-card');
   container.classList.add(letter);
-  container.textContent = letter;
+  const character = document.createElement('letter');
+  character.textContent = letter;
+  container.appendChild(character);
   return container;
 }
 

@@ -34,8 +34,11 @@ body, input {
   color: var(--fg);
 }
 
+crossword, guess-list, keyboard {
+  perspective: 1000px;
+}
+
 crossword, guess-list {
-  perspective: 400px;
   display: grid;
   grid-template-columns: repeat(5, auto);
   grid-template-rows: repeat(5, auto);
@@ -47,7 +50,7 @@ crossword {
   font-size: 1.5em;
 }
 
-letter {
+letter-card {
   font-family: monospace;
   font-size: 1.2em;
   position: relative;
@@ -58,33 +61,24 @@ letter {
   line-height: 2em;
   transition: transform 1s ease-out;
   user-select: none;
-}
-
-letter, letter:after {
   transform-style: preserve-3d;
+  background-color: var(--letter-back);
 }
 
-letter:after {
-  content: '';
+letter-card letter {
   backface-visibility: hidden;
-  transform: rotateX(180deg);
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--letter-back);
 }
 
-crossword letter {
+crossword letter-card {
   transform: rotateX(180deg);
 }
 
-crossword letter:not(.found) {
-  color: var(--bg);
-}
-
-crossword letter.found {
+crossword letter-card.found {
   transform: rotateX(0deg);
 }
 
@@ -99,27 +93,28 @@ keyboard-row {
   flex-direction: row;
   justify-content: center;
   gap: 0.1em;
+  transform-style: preserve-3d;
 }
 
-keyboard letter {
+keyboard letter-card {
   border-radius: 0.4em;
   width: 1.5em;
 }
 
-guess-list letter {
+guess-list letter-card {
   animation: flip 1s;
   animation-fill-mode: both;
 }
 
-letter.not-in-solution {
+letter-card.not-in-solution {
   background-color: grey;
 }
 
-letter.in-solution {
+letter-card.in-solution {
   background-color: gold;
 }
 
-letter.in-correct-location {
+letter-card.in-correct-location {
   background-color: #7A7;
 }
 
@@ -127,19 +122,19 @@ guess-list {
   align-content: flex-start;
 }
 
-guess-list letter:nth-of-type(2) {
+guess-list letter-card:nth-of-type(2) {
   animation-delay: 0.1s;
 }
 
-guess-list letter:nth-of-type(3) {
+guess-list letter-card:nth-of-type(3) {
   animation-delay: 0.2s;
 }
 
-guess-list letter:nth-of-type(4) {
+guess-list letter-card:nth-of-type(4) {
   animation-delay: 0.3s;
 }
 
-guess-list letter:nth-of-type(5) {
+guess-list letter-card:nth-of-type(5) {
   animation-delay: 0.4s;
 }
 
@@ -178,7 +173,7 @@ input {
   text-align: center;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 800px) and (pointer: fine) {
   body {
     display: grid;
     grid-template-columns: repeat(2, 18em);
