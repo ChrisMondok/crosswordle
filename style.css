@@ -60,6 +60,10 @@ crossword letter {
   transform: rotateX(180deg);
 }
 
+crossword letter:not(.found) {
+  color: var(--bg);
+}
+
 crossword letter.found {
   transform: rotateX(0deg);
 }
