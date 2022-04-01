@@ -11,7 +11,6 @@ async function fetchDictionary() {
 }
 
 async function getWordList() {
-  console.log('getting word list');
   const response = await fetch('/words.json');
   return await response.json();
 }
