@@ -14,14 +14,17 @@ const input = document.querySelector('input');
 createKeyboard();
 
 function typeLetter(letter) {
-  if(letter === '⌫') {
+  const key = document.querySelector(`keyboard .${letter}`);
+  if(key) animateKey(key);
+
+  if(letter === '↵') {
+    guess() 
+  } else if(letter === '⌫') {
     input.value = input.value.substring(0, input.value.length - 1);
   } else if(input.value.length >= 5) {
     return;
   } else {
     input.value += letter;
-    const key = document.querySelector(`keyboard letter.${letter}`);
-    if(key) animateKey(key);
   }
 }
 
@@ -62,13 +65,13 @@ async function guess() {
 
     if(allWordsInSolution.some(word => word[i] === letter)) {
       letterCell.classList.add('in-correct-location');
-      document.querySelector(`keyboard letter.${letter}`).classList.add('in-correct-location');
+      document.querySelector(`keyboard .${letter}`).classList.add('in-correct-location');
     } else if(solution.some(word => word.indexOf(letter) !== -1)) {
       letterCell.classList.add('in-solution');
-      document.querySelector(`keyboard letter.${letter}`).classList.add('in-solution');
+      document.querySelector(`keyboard .${letter}`).classList.add('in-solution');
     } else {
       letterCell.classList.add('not-in-solution');
-      document.querySelector(`keyboard letter.${letter}`).classList.add('not-in-solution');
+      document.querySelector(`keyboard .${letter}`).classList.add('not-in-solution');
     }
 
     guessList.insertBefore(letterCell, guessList.firstChild);
@@ -92,7 +95,7 @@ addEventListener('keydown', evt => {
   } else if(letters.has(evt.key) && !evt.ctrlKey && !evt.metaKey) {
     typeLetter(evt.key);
   } else if(evt.key === 'Enter') {
-    guess();
+    typeLetter('↵');
   } else {
     handled = false;
   }
@@ -122,22 +125,18 @@ function transpose(solution) {
 function createKeyboard() {
   const keyboard = document.querySelector('keyboard');
 
-  ['qwertyuiop', 'asdfghjkl','⌫zxcvbnm↵'].forEach((row, index) => {
+  ['qwertyuiop', 'asdfghjkl','↵zxcvbnm⌫'].forEach((row, index) => {
     const keyboardRow = document.createElement('keyboard-row');
     for(const letter of row) {
-      const cell = createLetterCell(letter);
-      cell.style.gridRow = index + 1;
-      keyboardRow.appendChild(cell);
+      const key = document.createElement('button');
+      key.textContent = letter;
+      key.className = `key ${letter}`;
+      key.style.gridRow = index + 1;
+      keyboardRow.appendChild(key);
 
-     cell.addEventListener('click', () => {
-       animateKey(cell);
-
-       if(letter === '↵') {
-         guess();
-       } else {
-         typeLetter(letter);
-       }
-     });
+      key.addEventListener('click', () => {
+        typeLetter(letter);
+      });
     }
     keyboard.appendChild(keyboardRow);
   });

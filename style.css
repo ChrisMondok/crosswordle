@@ -1,6 +1,7 @@
 :root {
   --bg: white;
   --fg: black;
+  --header-bg: var(--bg);
   --letter-back: #CCC;
   --message-bg: var(--fg);
   --message-fg: var(--bg);
@@ -14,8 +15,30 @@
   }
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+header {
+  --bg: var(--header-bg);
+  background-color: var(--bg);
+  box-shadow: 0px 0px 2px var(--fg);
+}
+
+main {
+  margin: 1em 0;
+}
+
 h1 {
+  margin: 0;
   text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
 }
 
 column {
@@ -29,9 +52,14 @@ body {
   font-family: sans-serif;
 }
 
-body, input {
+input {
   background-color: var(--bg);
   color: var(--fg);
+  font-size: inherit;
+  font-family: monospace;
+  border: 1px solid var(--fg);
+  border-radius: 2px;
+  text-align: center;
 }
 
 crossword, guess-list, keyboard {
@@ -40,25 +68,23 @@ crossword, guess-list, keyboard {
 
 crossword, guess-list {
   display: grid;
-  grid-template-columns: repeat(5, auto);
-  grid-template-rows: repeat(5, auto);
+  grid-template-columns: repeat(5, 1.5em);
+  grid-auto-rows: 1.5em;
   justify-content: center;
   gap: 4px;
 }
 
-crossword {
-  font-size: 1.5em;
+guess-list letter {
+  animation: flip 1s linear;
+  animation-fill-mode: both;
 }
 
 letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: monospace;
-  font-size: 1.2em;
-  position: relative;
   border: 1px solid var(--fg);
-  text-align: center;
-  height: 2em;
-  width: 2em;
-  line-height: 2em;
   transition: transform 1s ease-in-out, color 0s linear;
   transition-delay: 0s, 0.5s;
   user-select: none;
@@ -72,39 +98,54 @@ crossword letter:not(.found) {
   color: var(--letter-back);
 }
 
+keyboard, keyboard-row {
+  gap: 0.1em;
+}
+
 keyboard {
   display: flex;
   flex-direction: column;
-  gap: 0.1em;
 }
 
 keyboard-row {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 0.1em;
   transform-style: preserve-3d;
+  flex: 1 0 1.5em;
 }
 
-keyboard letter {
+keyboard button {
+  --bg: var(--letter-back);
+  background-color: var(--bg);
+  border: 1px solid black;
   border-radius: 0.4em;
-  width: 1.5em;
+  flex: 1 1 1.5em;
+  font-size: inherit;
 }
 
-guess-list letter {
-  animation: flip 1s linear;
-  animation-fill-mode: both;
+keyboard button.↵,
+keyboard button.⌫ {
+  width: 2.25em;
 }
 
-letter.not-in-solution {
+keyboard button.a {
+  margin-left: 0.75em;
+}
+
+keyboard button.l {
+  margin-right: 0.75em;
+}
+
+.not-in-solution {
   --bg: grey;
 }
 
-letter.in-solution {
+.in-solution {
   --bg: gold;
 }
 
-letter.in-correct-location {
+.in-correct-location {
   --bg: #7A7;
 }
 
@@ -113,23 +154,27 @@ guess-list {
 }
 
 guess-list letter:nth-of-type(2) {
-  animation-delay: 0.1s;
+  animation-delay: 0.1s, 0.6s;
 }
 
 guess-list letter:nth-of-type(3) {
-  animation-delay: 0.2s;
+  animation-delay: 0.2s, 0.7s;
 }
 
 guess-list letter:nth-of-type(4) {
-  animation-delay: 0.3s;
+  animation-delay: 0.3s, 0.8s;
 }
 
 guess-list letter:nth-of-type(5) {
-  animation-delay: 0.4s;
+  animation-delay: 0.4s, 0.9s;
 }
 
-guess-list {
-  font-size: 0.8em;
+guess-list:empty:after {
+  content: 'no guesses yet';
+  grid-column: 1/-1;
+  font-style: italic;
+  opacity: 0.5;
+  text-align: center;
 }
 
 message {
@@ -144,14 +189,17 @@ message {
 
 @keyframes flip {
   0% {
-    color: var(--bg);
+    color: var(--letter-back);
+    background-color: var(--letter-back);
     transform: rotateX(180deg);
   }
   49.999% {
-    color: var(--bg);
+    color: var(--letter-back);
+    background-color: var(--letter-back);
   }
   50% {
     color: var(--fg);
+    background-color: var(--bg);
   }
   100% {
     color: var(--fg);
@@ -167,49 +215,43 @@ form {
   align-items: center;
 }
 
-input {
-  border-radius: 0;
-  text-align: center;
-}
-
-@media (min-width: 800px) and (pointer: fine) {
-  body {
+@media (pointer: fine) and (min-width: 900px) {
+  main {
+    --column-width: 18em;
     display: grid;
-    grid-template-columns: repeat(2, 18em);
+    margin-left: var(--column-width);
+    grid-template-columns: repeat(2, var(--column-width));
     justify-content: center;
   }
+}
 
-  h1 {
-    grid-row: 1;
-    grid-column: 1/-1;
+@media (pointer: fine) and (min-width: 1200px) {
+  main {
+    font-size: 1.5em;
   }
+}
 
-  guess-list {
-    font-size: 1em;
+@media (min-width: 300px) {
+  crossword {
+    font-size: 1.5em;
+  }
+}
+
+@media (pointer: coarse) {
+  keyboard {
+    width: 100%;
+    max-width: 600px;
+  }
+}
+
+@media (pointer: coarse) and (min-width: 300px) {
+  keyboard, input {
+    font-size: 1.5em;
   }
 }
 
 @media (pointer: coarse) and (min-width: 400px) {
-  keyboard {
-    font-size: 1.4em;
-  }
-}
-
-@media (pointer: coarse) and (min-width: 480px) {
-  keyboard {
-    font-size: 1.8em;
-  }
-}
-
-@media (pointer: coarse) and (min-width: 600px) {
-  keyboard {
+  keyboard, input {
     font-size: 2em;
-  }
-}
-
-
-@media (max-height: 700px) {
-  crossword, guess-list {
-    font-size: 0.8em;
   }
 }

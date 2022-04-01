@@ -6,17 +6,21 @@
     <title>Crosswordle</title>
   </head>
   <body>
-    <h1>Crosswordle</h1>
-    <column>
-      <crossword></crossword>
-      <message>message</message>
-      <input readonly autofocus minlength="5" maxlength="5" pattern="[a-z]*"/>
-      <keyboard></keyboard>
-    </column>
-    <column>
-      <h2>Guesses</h2>
-      <guess-list></guess-list>
-    </column>
+    <header>
+      <h1>Crosswordle</h1>
+    </header>
+    <main>
+      <column>
+        <crossword></crossword>
+        <message>message</message>
+        <input readonly minlength="5" maxlength="5" pattern="[a-z]*"/>
+        <keyboard></keyboard>
+      </column>
+      <column>
+        <h2>Guesses</h2>
+        <guess-list></guess-list>
+      </column>
+    </main>
     <script type="module" src="script.js"></script>
   </body>
 </html>
