@@ -1,0 +1,147 @@
+:root {
+  --bg: white;
+  --fg: black;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: black;
+    --fg: white;
+  }
+}
+
+body, input {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+crossword, guess-list {
+  perspective: 400px;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  grid-template-rows: repeat(5, auto);
+  justify-content: center;
+  gap: 4px;
+}
+
+crossword {
+  font-size: 1.5em;
+}
+
+letter {
+  font-family: monospace;
+  font-size: 1.2em;
+  position: relative;
+  border: 1px solid var(--fg);
+  text-align: center;
+  height: 2em;
+  width: 2em;
+  line-height: 2em;
+  transition: transform 1s ease-out;
+}
+
+letter, letter:after {
+  transform-style: preserve-3d;
+}
+
+letter:after {
+  content: '';
+  backface-visibility: hidden;
+  transform: rotateX(180deg);
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg);
+}
+
+crossword letter {
+  transform: rotateX(180deg);
+}
+
+crossword letter.found {
+  transform: rotateX(0deg);
+}
+
+keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+keyboard-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2px;
+}
+
+keyboard letter {
+  border-radius: 0.4em;
+  width: 1.5em;
+}
+
+guess-list letter {
+  animation: flip 1s;
+  animation-fill-mode: both;
+}
+
+letter.not-in-solution {
+  background-color: grey;
+}
+
+letter.in-solution {
+  background-color: gold;
+}
+
+letter.in-correct-location {
+  background-color: #7A7;
+}
+
+guess-list {
+  overflow-y: auto;
+  align-content: flex-start;
+}
+
+guess-list letter:nth-of-type(2) {
+  animation-delay: 0.1s;
+}
+
+guess-list letter:nth-of-type(3) {
+  animation-delay: 0.2s;
+}
+
+guess-list letter:nth-of-type(4) {
+  animation-delay: 0.3s;
+}
+
+guess-list letter:nth-of-type(5) {
+  animation-delay: 0.4s;
+}
+
+guess-list {
+  margin: 2em;
+  font-size: 0.8em;
+}
+
+@keyframes flip {
+  from {
+    transform: rotateX(180deg);
+  }
+  to {
+    transform: rotateX(0deg);
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+input {
+  margin: 2em;
+  border-radius: 0;
+}
