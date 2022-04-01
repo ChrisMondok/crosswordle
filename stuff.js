@@ -1,5 +1,5 @@
 async function fetchSolution() {
-  const response = await fetch('/solutions');
+  const response = await fetch('solutions');
   const lines = (await response.text()).split('\n').filter(x => x);
   const numPuzzles = lines.length / lines[0].length;
   const puzzleNumber = Math.floor(Math.random() * numPuzzles);
@@ -11,7 +11,7 @@ async function fetchDictionary() {
 }
 
 async function getWordList() {
-  const response = await fetch('/words.json');
+  const response = await fetch('words.json');
   return await response.json();
 }
 
