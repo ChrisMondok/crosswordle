@@ -1,7 +1,7 @@
 :root {
   --bg: white;
   --fg: black;
-  --letter-back: var(--bg);
+  --letter-back: #CCC;
   --message-bg: var(--fg);
   --message-fg: var(--bg);
 }
@@ -50,7 +50,7 @@ crossword {
   font-size: 1.5em;
 }
 
-letter-card {
+letter {
   font-family: monospace;
   font-size: 1.2em;
   position: relative;
@@ -59,27 +59,17 @@ letter-card {
   height: 2em;
   width: 2em;
   line-height: 2em;
-  transition: transform 1s ease-out;
+  transition: transform 1s ease-in-out, color 0s linear;
+  transition-delay: 0s, 0.5s;
   user-select: none;
   transform-style: preserve-3d;
-  background-color: var(--letter-back);
+  --bg: var(--letter-back);
+  background-color: var(--bg);
 }
 
-letter-card letter {
-  backface-visibility: hidden;
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-}
-
-crossword letter-card {
+crossword letter:not(.found) {
   transform: rotateX(180deg);
-}
-
-crossword letter-card.found {
-  transform: rotateX(0deg);
+  color: var(--letter-back);
 }
 
 keyboard {
@@ -96,45 +86,45 @@ keyboard-row {
   transform-style: preserve-3d;
 }
 
-keyboard letter-card {
+keyboard letter {
   border-radius: 0.4em;
   width: 1.5em;
 }
 
-guess-list letter-card {
-  animation: flip 1s;
+guess-list letter {
+  animation: flip 1s linear;
   animation-fill-mode: both;
 }
 
-letter-card.not-in-solution {
-  background-color: grey;
+letter.not-in-solution {
+  --bg: grey;
 }
 
-letter-card.in-solution {
-  background-color: gold;
+letter.in-solution {
+  --bg: gold;
 }
 
-letter-card.in-correct-location {
-  background-color: #7A7;
+letter.in-correct-location {
+  --bg: #7A7;
 }
 
 guess-list {
   align-content: flex-start;
 }
 
-guess-list letter-card:nth-of-type(2) {
+guess-list letter:nth-of-type(2) {
   animation-delay: 0.1s;
 }
 
-guess-list letter-card:nth-of-type(3) {
+guess-list letter:nth-of-type(3) {
   animation-delay: 0.2s;
 }
 
-guess-list letter-card:nth-of-type(4) {
+guess-list letter:nth-of-type(4) {
   animation-delay: 0.3s;
 }
 
-guess-list letter-card:nth-of-type(5) {
+guess-list letter:nth-of-type(5) {
   animation-delay: 0.4s;
 }
 
@@ -153,10 +143,19 @@ message {
 }
 
 @keyframes flip {
-  from {
+  0% {
+    color: var(--bg);
     transform: rotateX(180deg);
   }
-  to {
+  49.999% {
+    color: var(--bg);
+  }
+  50% {
+    color: var(--fg);
+  }
+  100% {
+    color: var(--fg);
+    font-size: 1em;
     transform: rotateX(0deg);
   }
 }
