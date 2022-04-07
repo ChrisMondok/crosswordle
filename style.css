@@ -118,7 +118,8 @@ keyboard-row {
 keyboard button {
   --bg: var(--letter-back);
   background-color: var(--bg);
-  border: 1px solid black;
+  color: var(--fg);
+  border: 1px solid var(--fg);
   border-radius: 0.4em;
   flex: 1 1 1.5em;
   font-size: inherit;
