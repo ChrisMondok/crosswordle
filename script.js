@@ -134,7 +134,13 @@ function createKeyboard() {
       key.style.gridRow = index + 1;
       keyboardRow.appendChild(key);
 
-      key.addEventListener('click', () => {
+      key.addEventListener('click', (event) => {
+        event.preventDefault();
+        typeLetter(letter);
+      });
+
+      key.addEventListener('touchstart', (event) => {
+        event.preventDefault();
         typeLetter(letter);
       });
     }
