@@ -5,6 +5,11 @@
   --letter-back: #CCC;
   --message-bg: var(--fg);
   --message-fg: var(--bg);
+
+  --correct-bg: #7A7;
+  --partially-correct-bg: gold;
+  --incorrect-bg: grey;
+  --incorrect-fg: var(--fg);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -12,6 +17,11 @@
     --bg: black;
     --fg: white;
     --letter-back: #333;
+
+    --correct-bg: #494;
+    --partially-correct-bg: #b6a757;
+    --incorrect-bg: #222;
+    --incorrect-fg: grey;
   }
 }
 
@@ -143,15 +153,16 @@ keyboard button.l {
 }
 
 .not-in-solution {
-  --bg: grey;
+  background-color: var(--incorrect-bg);
+  color: var(--incorrect-fg);
 }
 
 .in-solution {
-  --bg: gold;
+  background-color: var(--partially-correct-bg);
 }
 
 .in-correct-location {
-  --bg: #7A7;
+  background-color: var(--correct-bg);
 }
 
 guess-list {
