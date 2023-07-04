@@ -1,5 +1,14 @@
 import {allWords, solution} from './stuff.js';
 
+if('serviceWorker' in navigator) {
+  try {
+    await navigator.serviceWorker.register('./worker.js');
+    console.log(`Service worker registered`);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 const crossword = document.querySelector('crossword');
 for(const word of solution) {
   for(const letter of word) {
