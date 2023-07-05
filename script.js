@@ -151,13 +151,12 @@ function createCrossword() {
 function createKeyboard() {
   destroyAllChildren(keyboard);
 
-  ['qwertyuiop', 'asdfghjkl','↵zxcvbnm⌫'].forEach((row, index) => {
+  for(const row of ['qwertyuiop', 'asdfghjkl','↵zxcvbnm⌫']) {
     const keyboardRow = document.createElement('keyboard-row');
     for(const letter of row) {
       const key = document.createElement('button');
       key.textContent = letter;
       key.className = `key ${letter}`;
-      key.style.gridRow = index + 1;
       keyboardRow.appendChild(key);
 
       key.addEventListener('click', (event) => {
@@ -173,7 +172,7 @@ function createKeyboard() {
       });
     }
     keyboard.appendChild(keyboardRow);
-  });
+  };
 }
 
 function animateKey(key) {

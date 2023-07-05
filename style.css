@@ -130,6 +130,7 @@ keyboard, keyboard-row {
 keyboard {
   display: flex;
   flex-direction: column;
+  min-width: 200px;
 }
 
 keyboard-row {
