@@ -1,4 +1,4 @@
-async function fetchSolution() {
+export async function fetchSolution() {
   const solutions = await (await fetch('solutions')).text();
   const numPuzzles = solutions.length / 25; 
   const puzzleNumber = Math.floor(Math.random() * numPuzzles);
@@ -19,4 +19,3 @@ async function getWordList() {
 }
 
 export const allWords = await fetchDictionary();
-export const solution = await fetchSolution();

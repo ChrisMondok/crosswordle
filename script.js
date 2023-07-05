@@ -1,4 +1,4 @@
-import {allWords, solution} from './stuff.js';
+import {allWords, fetchSolution} from './stuff.js';
 
 if('serviceWorker' in navigator) {
   try {
@@ -10,34 +10,25 @@ if('serviceWorker' in navigator) {
 }
 
 const crossword = document.querySelector('crossword');
-for(const word of solution) {
-  for(const letter of word) {
-    crossword.appendChild(createLetterCell(letter));
-  }
-}
-
-let numGuesses = 0;
-
 const input = document.querySelector('input');
+const guessList = document.querySelector('guess-list');
+const keyboard = document.querySelector('keyboard');
+document.getElementById('newGameButton').addEventListener('click', createGame);
 
-createKeyboard();
+let solution;
 
-function typeLetter(letter) {
-  const key = document.querySelector(`keyboard .${letter}`);
-  if(key) animateKey(key);
-
-  if(letter === '↵') {
-    guess() 
-  } else if(letter === '⌫') {
-    input.value = input.value.substring(0, input.value.length - 1);
-  } else if(input.value.length >= 5) {
-    return;
-  } else {
-    input.value += letter;
-  }
+createGame();
+async function createGame() {
+  if(isGameInProgress() && !hasWon() && !confirm('Start a new game?')) return;
+  solution = await fetchSolution();
+  createCrossword();
+  createKeyboard();
+  destroyAllChildren(guessList);
 }
 
 async function guess() {
+  if(hasWon()) return;
+
   const word = input.value;
   if(word.length === 0) {
     showMessage('type any five letter word');
@@ -53,10 +44,8 @@ async function guess() {
     return;
   }
 
-  numGuesses++;
   input.value = '';
 
-  const guessList = document.querySelector('guess-list');
   const allWordsInSolution = [...solution, ...transpose(solution)];
   for(let i = word.length - 1; i >= 0; i--) {
     const letter = word[i];
@@ -86,7 +75,8 @@ async function guess() {
     guessList.insertBefore(letterCell, guessList.firstChild);
   }
 
-  if(document.querySelectorAll('crossword letter.found').length === 25) {
+  if(hasWon()) {
+    const numGuesses = guessList.querySelectorAll('letter').length / 5;
     showMessage(`you won in ${numGuesses} guesses`);
   }
 }
@@ -94,6 +84,8 @@ async function guess() {
 const letters = new Set('qwertyuiopasdfghjklzxcvbnm'.split(''))
 
 addEventListener('keydown', evt => {
+  if(hasWon()) return;
+
   let handled = true;
   if(evt.key === 'Backspace') {
     if(evt.ctrlKey || evt.metaKey) {
@@ -110,6 +102,22 @@ addEventListener('keydown', evt => {
   }
   if(handled) evt.preventDefault();
 });
+
+function typeLetter(letter) {
+  const key = document.querySelector(`keyboard .${letter}`);
+  if(key) animateKey(key);
+
+  if(letter === '↵') {
+    guess() 
+  } else if(letter === '⌫') {
+    input.value = input.value.substring(0, input.value.length - 1);
+  } else if(input.value.length >= 5) {
+    return;
+  } else {
+    input.value += letter;
+  }
+}
+
 
 function revealCell(x, y) {
   const index = 5*y+x;
@@ -131,8 +139,17 @@ function transpose(solution) {
   });
 }
 
+function createCrossword() {
+  destroyAllChildren(crossword);
+  for(const word of solution) {
+    for(const letter of word) {
+      crossword.appendChild(createLetterCell(letter));
+    }
+  }
+}
+
 function createKeyboard() {
-  const keyboard = document.querySelector('keyboard');
+  destroyAllChildren(keyboard);
 
   ['qwertyuiop', 'asdfghjkl','↵zxcvbnm⌫'].forEach((row, index) => {
     const keyboardRow = document.createElement('keyboard-row');
@@ -145,11 +162,13 @@ function createKeyboard() {
 
       key.addEventListener('click', (event) => {
         event.preventDefault();
+        if(hasWon()) return;
         typeLetter(letter);
       });
 
       key.addEventListener('touchstart', (event) => {
         event.preventDefault();
+        if(hasWon()) return;
         typeLetter(letter);
       });
     }
@@ -225,6 +244,18 @@ function showMessage(message) {
     duration: 5000,
     iterations: 1
   });
+}
+
+function destroyAllChildren(el) {
+  while(el.firstChild) el.removeChild(el.firstChild);
+}
+
+function hasWon() {
+  return document.querySelectorAll('crossword letter.found').length === 25;
+}
+
+function isGameInProgress() {
+  return !!guessList.firstChild;
 }
 
 window.showMessage = showMessage;
